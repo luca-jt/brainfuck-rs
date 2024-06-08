@@ -23,10 +23,10 @@ fn main() {
     while i < chars.len() {
         match chars[i] {
             '+' => {
-                cell[ptr] += 1;
+                cell[ptr] = cell[ptr].wrapping_add(1);
             }
             '-' => {
-                cell[ptr] -= 1;
+                cell[ptr] = cell[ptr].wrapping_sub(1);
             }
             '>' => {
                 ptr += 1;
