@@ -20,6 +20,8 @@ fn main() {
         .map(|byte| *byte as char)
         .collect();
 
+    let mut io_lock = stdout().lock();
+
     // interpret file
     let mut i: usize = 0;
     while i < chars.len() {
@@ -41,7 +43,7 @@ fn main() {
                 }
             }
             '.' => {
-                print!("{}", cell[ptr] as char);
+                write!(io_lock, "{}", cell[ptr] as char).unwrap();
             }
             ',' => {
                 stdin().read_exact(&mut [cell[ptr]]).unwrap();
@@ -76,5 +78,5 @@ fn main() {
         }
         i += 1;
     }
-    stdout().flush().unwrap();
+    io_lock.flush().unwrap();
 }
