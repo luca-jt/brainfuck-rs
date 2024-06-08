@@ -1,10 +1,12 @@
 use std::env;
 use std::fs;
-use std::io::{stdin, stdout, Read, Write};
+use std::io::{Read, stdin, stdout, Write};
+
+const CELL_LENGTH: usize = 30000;
 
 fn main() {
     // set up state
-    let mut cell: Vec<u8> = vec![0; 30000];
+    let mut cell: Vec<u8> = vec![0; CELL_LENGTH];
     let mut ptr: usize = 0;
 
     // read input
@@ -29,28 +31,44 @@ fn main() {
                 cell[ptr] = cell[ptr].wrapping_sub(1);
             }
             '>' => {
-                ptr += 1;
+                ptr = (ptr + 1) % CELL_LENGTH;
             }
             '<' => {
-                ptr -= 1;
+                if ptr == 0 {
+                    ptr = CELL_LENGTH - 1;
+                } else {
+                    ptr -= 1;
+                }
             }
             '.' => {
-                stdout().write(&[cell[ptr]]).unwrap();
+                print!("{}", cell[ptr] as char);
             }
             ',' => {
                 stdin().read_exact(&mut [cell[ptr]]).unwrap();
             }
             '[' => {
                 if cell[ptr] == 0 {
-                    while chars[i] != ']' {
+                    let mut loop_count = 1;
+                    while loop_count > 0 {
                         i += 1;
+                        if chars[i] == '[' {
+                            loop_count += 1;
+                        } else if chars[i] == ']' {
+                            loop_count -= 1;
+                        }
                     }
                 }
             }
             ']' => {
                 if cell[ptr] != 0 {
-                    while chars[i] != '[' {
+                    let mut loop_count = 1;
+                    while loop_count > 0 {
                         i -= 1;
+                        if chars[i] == '[' {
+                            loop_count -= 1;
+                        } else if chars[i] == ']' {
+                            loop_count += 1;
+                        }
                     }
                 }
             }
